@@ -1,0 +1,96 @@
+# Virtual Train Route Planner
+# Implemented using Doubly Linked List and Circular Linked List
+
+class Station:
+    def __init__(self, name):
+        self.name = name
+        self.next = None
+        self.prev = None
+
+
+# Doubly Linked List for linear routes
+class TrainRoute:
+    def __init__(self):
+        self.head = None
+
+    def add_station(self, name):
+        new_station = Station(name)
+        if self.head is None:
+            self.head = new_station
+            return
+        temp = self.head
+        while temp.next:
+            temp = temp.next
+        temp.next = new_station
+        new_station.prev = temp
+
+    def display_forward(self):
+        temp = self.head
+        print("Route (Forward):", end=" ")
+        while temp:
+            print(temp.name, end=" -> ")
+            temp = temp.next
+        print("END")
+
+    def display_backward(self):
+        temp = self.head
+        while temp and temp.next:
+            temp = temp.next
+        print("Route (Backward):", end=" ")
+        while temp:
+            print(temp.name, end=" -> ")
+            temp = temp.prev
+        print("START")
+
+
+# Circular Linked List for loop routes
+class CircularRoute:
+    def __init__(self):
+        self.head = None
+
+    def add_station(self, name):
+        new_station = Station(name)
+        if self.head is None:
+            self.head = new_station
+            self.head.next = self.head
+            return
+        temp = self.head
+        while temp.next != self.head:
+            temp = temp.next
+        temp.next = new_station
+        new_station.next = self.head
+
+    def display(self, count):
+        if self.head is None:
+            print("No stations in loop route")
+            return
+        temp = self.head
+        print("Loop Route:", end=" ")
+        for _ in range(count):  # show limited stations to avoid infinite loop
+            print(temp.name, end=" -> ")
+            temp = temp.next
+        print("...")
+
+
+# ------------------- DEMO -------------------
+
+if __name__ == "__main__":
+    # Doubly Linked List Route
+    print("=== Linear Train Route (Doubly Linked List) ===")
+    route = TrainRoute()
+    route.add_station("Station A")
+    route.add_station("Station B")
+    route.add_station("Station C")
+    route.add_station("Station D")
+
+    route.display_forward()
+    route.display_backward()
+
+    # Circular Route
+    print("\n=== Loop Train Route (Circular Linked List) ===")
+    loop_route = CircularRoute()
+    loop_route.add_station("Station X")
+    loop_route.add_station("Station Y")
+    loop_route.add_station("Station Z")
+
+    loop_route.display(10)  # show 10 stops to demonstrate looping
